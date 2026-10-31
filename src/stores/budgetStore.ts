@@ -1,4 +1,3 @@
-import { useSyncExternalStore } from "react";
 import type { AccountId, AppState, Category, Transaction, TxKind } from "../types";
 import {
   dropLegacyState,
@@ -11,6 +10,7 @@ import { uid } from "../utils/id";
 
 let state: AppState = initialState();
 dropLegacyState();
+
 const listeners = new Set<() => void>();
 
 const commit = (next: AppState): void => {
@@ -151,6 +151,3 @@ export const budgetStore = {
     commit(createEmptyState());
   },
 };
-
-export const useAppState = (): AppState =>
-  useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
