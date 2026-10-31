@@ -43,6 +43,15 @@ Load sample month**.
 | `npm run build`   | Type-check and build for production       |
 | `npm run preview` | Preview the production build locally      |
 
+## Deploying to GitHub Pages
+
+The workflow in `.github/workflows/deploy.yml` builds and deploys the site
+whenever you push to `main` (or run it manually from the Actions tab). In your
+repository, open **Settings → Pages** and set the build and deployment source
+to **GitHub Actions**. After the workflow succeeds, GitHub will show the site
+URL on the Pages settings page. The build automatically uses the repository
+path so assets load correctly on a project site.
+
 ## Tech
 
 - **React 18** with function components and hooks

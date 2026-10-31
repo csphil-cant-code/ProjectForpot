@@ -4,7 +4,7 @@ export const gcashLogo = (
   decorative = false,
   className?: string,
 ): string => `<img
-  src="/image.png"
+  src="${import.meta.env.BASE_URL}image.png"
   alt="${decorative ? "" : "GCash"}"
   width="${size}"
   height="${size}"
@@ -19,7 +19,7 @@ export const cashLogo = (
   decorative = false,
   className?: string,
 ): string => `<img
-  src="/cash.png"
+  src="${import.meta.env.BASE_URL}cash.png"
   alt="${decorative ? "" : "Cash"}"
   width="${size}"
   height="${size}"
