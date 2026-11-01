@@ -16,6 +16,8 @@ no React, Vue, or other runtime library.
   into a total, starting from amounts you set yourself.
 - **Fast logging** — expense/income toggle, quick-amount chips, category chips,
   date and note, all in a single modal.
+- **Starter categories** — Rent, Groceries, Electric Bill, Water Bill, Market,
+  and Internet are ready on first launch, with room to add your own.
 - **Monthly budgets** — set a limit per category, watch progress bars fill, and
   get flagged when a category goes over.
 - **Reports** — six-month income-vs-spending chart, category breakdown, and a
@@ -33,11 +35,12 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (default `http://localhost:5173`). The app starts with a
-clean slate — zero balances, no categories, no transactions. Add your own
-starting balances in **Settings** and create categories in **Budgets** before
-logging your first entry. A demo month is available anytime under **Settings →
-Load sample month**.
+Open the URL Vite prints (default `http://localhost:5173`). The app starts with
+zero balances and six starter categories — **Rent, Groceries, Electric Bill,
+Water Bill, Market, and Internet**. Add your own starting balances in
+**Settings**, set monthly limits for the categories in **Budgets**, then log
+your first entry. A demo month is available anytime under **Settings → Load
+sample month**.
 
 ### Scripts
 

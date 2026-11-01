@@ -5,7 +5,7 @@ import {
   parseBackup,
   saveState,
 } from "../lib/storage";
-import { createEmptyState, createSeedState } from "../lib/seed";
+import { createDefaultState, createSeedState } from "../lib/seed";
 import { uid } from "../utils/id";
 
 let state: AppState = initialState();
@@ -148,6 +148,6 @@ export const budgetStore = {
   },
 
   clearAllData(): void {
-    commit(createEmptyState());
+    commit(createDefaultState());
   },
 };

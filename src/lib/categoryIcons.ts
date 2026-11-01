@@ -1,4 +1,4 @@
-import type { TxKind } from "../types";
+import type { Category, TxKind } from "../types";
 
 export interface CategoryIcon {
   emoji: string;
@@ -19,6 +19,7 @@ export const CATEGORY_ICONS: CategoryIcon[] = [
   { emoji: "☕", label: "Coffee" },
   { emoji: "🍿", label: "Snacks" },
   { emoji: "🛒", label: "Groceries" },
+  { emoji: "🏪", label: "Market" },
   { emoji: "🚌", label: "Transport" },
   { emoji: "🚗", label: "Car" },
   { emoji: "⛽", label: "Fuel" },
@@ -49,16 +50,66 @@ export const CATEGORY_ICONS: CategoryIcon[] = [
 ];
 
 /**
+ * The starter categories every new install begins with. Budgets start at zero
+ * so the user can set their own limits on the Budgets page.
+ */
+export const DEFAULT_CATEGORIES: Category[] = [
+  {
+    id: "rent",
+    name: "Rent",
+    emoji: "🏠",
+    color: "#bfe3c8",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+  {
+    id: "groceries",
+    name: "Groceries",
+    emoji: "🛒",
+    color: "#bfdce8",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+  {
+    id: "electric-bill",
+    name: "Electric Bill",
+    emoji: "💡",
+    color: "#ecd6b8",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+  {
+    id: "water-bill",
+    name: "Water Bill",
+    emoji: "💧",
+    color: "#e8c7dd",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+  {
+    id: "market",
+    name: "Market",
+    emoji: "🏪",
+    color: "#cfc6ea",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+  {
+    id: "internet",
+    name: "Internet",
+    emoji: "🌐",
+    color: "#c8dfb6",
+    kind: "expense",
+    monthlyBudget: 0,
+  },
+];
+
+/**
  * Ready-made categories. Kept short on purpose so the quick-add row stays
  * scannable — anything else can be created with the custom form.
  */
 export const QUICK_CATEGORIES: QuickCategory[] = [
-  { name: "Food", emoji: "🍚", kind: "expense" },
-  { name: "Transport", emoji: "🚌", kind: "expense" },
-  { name: "Bills", emoji: "🧾", kind: "expense" },
-  { name: "Shopping", emoji: "🛍️", kind: "expense" },
-  { name: "Health", emoji: "💊", kind: "expense" },
-  { name: "Load", emoji: "📱", kind: "expense" },
+  ...DEFAULT_CATEGORIES.map(({ name, emoji, kind }) => ({ name, emoji, kind })),
   { name: "Allowance", emoji: "💰", kind: "income" },
   { name: "Salary", emoji: "💵", kind: "income" },
   { name: "Gift", emoji: "🎁", kind: "income" },

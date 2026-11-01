@@ -7,7 +7,7 @@ import type {
   TxKind,
 } from "../types";
 import { toISO } from "../utils/date";
-import { createEmptyState } from "./seed";
+import { createDefaultState } from "./seed";
 
 const STORAGE_KEY = "pondo.state.v2";
 const LEGACY_KEYS = ["pondo.state.v1"];
@@ -159,8 +159,8 @@ export const saveState = (state: AppState): void => {
   }
 };
 
-/** A brand-new install starts completely empty — no sample amounts or categories. */
-export const initialState = (): AppState => loadState() ?? createEmptyState();
+/** A brand-new install starts with the six starter categories and zero balances. */
+export const initialState = (): AppState => loadState() ?? createDefaultState();
 
 /** Old sample-data saves are only removed once a new state exists. */
 export const dropLegacyState = (): void => {

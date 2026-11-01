@@ -102,7 +102,10 @@ export const settingsPage = (state: AppState): string => `
       <div class="danger-zone">
         <div>
           <strong>Clear everything</strong>
-          <p class="muted">Removes transactions, budgets, and custom categories.</p>
+          <p class="muted">
+            Removes transactions and budgets, and restores the starter
+            categories.
+          </p>
         </div>
         <button type="button" class="btn btn--danger" data-action="clear-data">
           ${icon("trash", 16)} Clear data
@@ -116,9 +119,8 @@ export const settingsPage = (state: AppState): string => `
     <div>
       <h2 class="section__title">About Pondo</h2>
       <p class="section__text">
-        Pondo is your Budget ni Pot for GCash and cash. Log what you spend, set
-        monthly limits per category, and watch the numbers settle into a
-        pastel-green picture of your money.
+        This app was made by me, Plong, with the help of AI. I made it for Pot
+        so she can monitor her budget.
       </p>
       <p class="muted">Version 0.1.0 · built with HTML, CSS &amp; TypeScript</p>
     </div>

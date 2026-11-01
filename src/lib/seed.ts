@@ -1,6 +1,7 @@
 import type { AppState, Category, Transaction } from "../types";
 import { toISO } from "../utils/date";
 import { uid } from "../utils/id";
+import { DEFAULT_CATEGORIES } from "./categoryIcons";
 
 const categories: Category[] = [
   {
@@ -172,12 +173,16 @@ export const createSeedState = (): AppState => ({
   transactions: sampleTransactions(),
 });
 
-export const createEmptyState = (): AppState => ({
+/**
+ * A fresh install starts with the six household categories and no budgets.
+ * `DEFAULT_CATEGORIES` is cloned so later edits never mutate the shared list.
+ */
+export const createDefaultState = (): AppState => ({
   version: 2,
   accounts: {
     gcash: { id: "gcash", name: "GCash", startingBalance: 0 },
     cash: { id: "cash", name: "Cash", startingBalance: 0 },
   },
-  categories: [],
+  categories: DEFAULT_CATEGORIES.map((category) => ({ ...category })),
   transactions: [],
 });
