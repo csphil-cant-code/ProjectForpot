@@ -4,7 +4,11 @@ A calm, pastel-green **Budget ni Pot** for **GCash** and **cash**. Log what you
 spend and receive, set monthly limits per category, and see exactly how much is
 left — all stored locally in your browser.
 
-![Stack](https://img.shields.io/badge/React-18-5faf83) ![TypeScript](https://img.shields.io/badge/TypeScript-5-5faf83) ![Vite](https://img.shields.io/badge/Vite-5-5faf83)
+![Stack](https://img.shields.io/badge/HTML-5-5faf83) ![CSS](https://img.shields.io/badge/CSS-3-5faf83) ![TypeScript](https://img.shields.io/badge/TypeScript-5-5faf83) ![Vite](https://img.shields.io/badge/Vite-8-5faf83)
+
+**No framework.** Pondo is built with plain HTML, CSS, and TypeScript. The UI is
+rendered with template strings, a tiny observable store, and event delegation —
+no React, Vue, or other runtime library.
 
 ## Features
 
@@ -54,49 +58,63 @@ path so assets load correctly on a project site.
 
 ## Tech
 
-- **React 18** with function components and hooks
+- **HTML + CSS + TypeScript** — no UI framework and no runtime dependencies
 - **TypeScript** in strict mode
-- **Vite 5** for dev/build
-- **No UI or state libraries** — a tiny `useSyncExternalStore` store keeps the
-  bundle light and the data flow explicit
+- **Vite** for the dev server and production build (build tooling only)
+- **Tiny observable stores** — `budgetStore` and `uiStore` expose
+  `subscribe`/`getSnapshot`, and the app re-renders on change
+- **Template-string views** — each page is a pure function that returns HTML;
+  `App.ts` swaps it into `#root`
+- **Event delegation** — one set of document-level listeners handles clicks,
+  input, submit, and keyboard shortcuts through `data-action` attributes
 - **No router dependency** — views are switched through the UI store
+
+The production build is plain HTML, CSS, and JavaScript in `dist/`, so it can be
+hosted on any static host.
 
 ## Project structure
 
 ```
+index.html                HTML shell and font/theme metadata
 src/
-  app/                    App entry: view switching
+  main.ts                 Entry point: styles + app bootstrap
+  app/App.ts              Renders views, handles events and the transaction modal
   components/
-    common/               Shared primitives (icons, progress, toast…)
-    layout/               Sidebar, mobile nav, page header, month switcher
-    dashboard/            Balance hero, account cards, mini stats, budget watch
-    budgets/              Budget cards and the new-category form
-    transactions/         Modal, form, list and row components
-    reports/              Month chart, category split, balance donut
+    layout.ts             App shell: sidebar, mobile nav, floating add button
+    transactions.ts       Transaction list, row, form, and modal markup
+    budgets.ts            Budget cards and the new-category form
+    reports.ts            Month chart, category split, balance donut
+    common/               Icons, logos, progress bar, header, toast, empty state
+    layout/nav.ts         Navigation items shared by sidebar and mobile nav
   features/
-    dashboard/            Dashboard page
-    transactions/         Transactions page with filters
-    budgets/              Budget planning page
-    reports/              Analytics page
-    settings/             Starting balances and data management
+    dashboard.ts          Dashboard page
+    transactions.ts       Transactions page with filters
+    budgets.ts            Budget planning page
+    reports.ts            Analytics page
+    settings.ts           Starting balances and data management
     auth/                 (reserved)
     accounts/             (reserved)
     categories/           (reserved)
-  services/
-    api/                  (reserved for a backend client)
-    storage/              (reserved; local persistence lives in src/lib)
-  stores/                 budgetStore (data) and uiStore (view/month/modal)
-  types/                  Shared TypeScript models
-  utils/                  Formatting, dates, ids
-  lib/                    Pure calculations, seed data, localStorage, labels
+  stores/
+    budgetStore.ts        App data: accounts, categories, transactions
+    uiStore.ts            View, month, filters, modal, toast, form drafts
+  lib/
+    calc.ts               Balance, totals, budget, and report calculations
+    storage.ts            localStorage persistence, validation, backup import
+    seed.ts               Empty state and sample month
+    categoryIcons.ts      Emoji suggestions for categories
+    labels.ts             Human-readable account/kind labels
+  types/index.ts          Shared TypeScript models
+  utils/                  Formatting, dates, ids, HTML escaping
+  styles/globals.css      Global stylesheet and pastel-green theme tokens
+  services/               (reserved for a backend client)
   hooks/                  (reserved for reusable hooks)
-  styles/                 Global stylesheet and pastel-green theme tokens
 public/                   Static assets
 docs/                     Documentation and design notes
 tests/                    unit / integration / e2e (reserved)
 scripts/                  Automation scripts (reserved)
 config/                   Environment and app configuration (reserved)
-.github/workflows/        CI/CD (reserved)
+.github/workflows/        CI/CD (deployment)
 ```
 
 ## How balances are calculated

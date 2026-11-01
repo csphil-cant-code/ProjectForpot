@@ -1,4 +1,3 @@
-import "../styles/globals.css";
 import type { AccountId, AppState, TxKind, ViewId } from "../types";
 import { budgetStore } from "../stores/budgetStore";
 import {

@@ -1,7 +1,11 @@
 -- ============================================================
--- Budget ni Pot — Supabase schema
+-- Budget ni Pot — optional Supabase schema (not used by the app)
 -- Stores category budgets + income/expense transactions per user.
 -- No wallet/account table.
+--
+-- Pondo is currently a local-first, framework-free app with no backend
+-- dependency. This file is kept as a starting point for a future optional
+-- cloud-sync feature; it is not loaded by the build.
 --
 -- Paste into Supabase Dashboard → SQL Editor → New query → Run.
 -- If the app has no login screen, enable anonymous sign-ins under
