@@ -1,5 +1,7 @@
 # Pondo
 
+<img src="resources/logo.jpg" alt="Pondo logo" width="240" />
+
 A calm, pastel-green **Budget ni Pot** for **GCash** and **cash**. Log what you
 spend and receive, set monthly limits per category, and see exactly how much is
 left — all stored locally in your browser.
@@ -75,6 +77,16 @@ path so assets load correctly on a project site.
 The production build is plain HTML, CSS, and JavaScript in `dist/`, so it can be
 hosted on any static host.
 
+## Brand
+
+`resources/logo-original.jpg` is the source artwork. The derived files —
+`resources/logo.jpg`, `resources/icon.png`, and `resources/splash.png` — are
+colour-graded to the app's green ramp and sized for store listings and the
+Capacitor/Android wrapper. The in-app mark (`public/logo-mark.jpg`), favicon
+(`public/icon-512.png`), and touch icon (`public/apple-touch-icon.png`) all come
+from the same peso-emblem crop, so the sidebar, mobile header, Settings card, and
+browser tab stay in sync.
+
 ## Project structure
 
 ```
@@ -112,7 +124,8 @@ src/
   styles/globals.css      Global stylesheet and pastel-green theme tokens
   services/               (reserved for a backend client)
   hooks/                  (reserved for reusable hooks)
-public/                   Static assets
+public/                   Static assets (app mark, favicon, GCash logo)
+resources/                Brand source: logo, Android icon and splash
 docs/                     Documentation and design notes
 tests/                    unit / integration / e2e (reserved)
 scripts/                  Automation scripts (reserved)

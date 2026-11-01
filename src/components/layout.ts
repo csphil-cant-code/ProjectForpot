@@ -3,6 +3,7 @@ import type { UiState } from "../stores/uiStore";
 import { totalBalance } from "../lib/calc";
 import { peso } from "../utils/format";
 import { icon, type IconName } from "./common/Icon";
+import { pondoMark } from "./common/Logos";
 
 interface NavItem {
   id: ViewId;
@@ -32,7 +33,7 @@ export const NAV_ITEMS: NavItem[] = [
 const sidebar = (state: AppState, view: ViewId): string => `
   <aside class="sidebar">
     <div class="brand">
-      <span class="brand__mark">${icon("leaf", 22)}</span>
+      <span class="brand__mark">${pondoMark(42)}</span>
       <span class="brand__text">
         <strong>Pondo</strong>
         <small>Budget ni Pot</small>
@@ -65,6 +66,15 @@ const sidebar = (state: AppState, view: ViewId): string => `
     <p class="sidebar__footer">Your data stays on this device.</p>
   </aside>`;
 
+const mobileBrand = (): string => `
+  <div class="mobile-brand">
+    <span class="mobile-brand__mark">${pondoMark(34)}</span>
+    <span class="mobile-brand__text">
+      <strong>Pondo</strong>
+      <small>Budget ni Pot</small>
+    </span>
+  </div>`;
+
 const mobileNav = (view: ViewId): string => `
   <nav class="bottom-nav" aria-label="Main">
     ${NAV_ITEMS.map(
@@ -87,7 +97,7 @@ export const appShell = (
   <div class="shell">
     ${sidebar(state, ui.view)}
     <main class="shell__main">
-      <div class="page">${page}</div>
+      <div class="page">${mobileBrand()}${page}</div>
     </main>
     ${mobileNav(ui.view)}
 

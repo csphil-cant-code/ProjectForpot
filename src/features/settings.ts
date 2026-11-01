@@ -1,5 +1,5 @@
 import type { AppState } from "../types";
-import { cashLogo, gcashLogo } from "../components/common/Logos";
+import { cashLogo, gcashLogo, pondoMark } from "../components/common/Logos";
 import { icon } from "../components/common/Icon";
 import { pageHeader } from "../components/common/ui";
 import { peso } from "../utils/format";
@@ -115,7 +115,7 @@ export const settingsPage = (state: AppState): string => `
   </div>
 
   <section class="card card--pad about">
-    <span class="about__mark">${icon("leaf", 22)}</span>
+    <span class="about__mark">${pondoMark(46)}</span>
     <div>
       <h2 class="section__title">About Pondo</h2>
       <p class="section__text">
