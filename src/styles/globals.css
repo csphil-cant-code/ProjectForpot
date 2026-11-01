@@ -174,10 +174,10 @@ input[type="number"] {
   border-radius: 14px;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--green-700);
+  background: var(--green-100);
   box-shadow:
-    0 10px 20px -14px rgba(31, 71, 54, 0.75),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    0 6px 14px -10px rgba(47, 108, 80, 0.45),
+    inset 0 0 0 1px rgba(95, 175, 131, 0.18);
 }
 
 .brand__text {
@@ -214,8 +214,8 @@ input[type="number"] {
   border-radius: 11px;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--green-700);
-  box-shadow: 0 8px 16px -12px rgba(31, 71, 54, 0.7);
+  background: var(--green-100);
+  box-shadow: 0 6px 14px -10px rgba(47, 108, 80, 0.45);
 }
 
 .mobile-brand__text {
@@ -2209,7 +2209,7 @@ input[type="number"] {
   border-radius: 15px;
   overflow: hidden;
   flex-shrink: 0;
-  background: var(--green-700);
+  background: var(--green-100);
   box-shadow: var(--shadow-sm);
 }
 

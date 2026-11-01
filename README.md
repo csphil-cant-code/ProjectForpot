@@ -79,13 +79,13 @@ hosted on any static host.
 
 ## Brand
 
-`resources/logo-original.jpg` is the source artwork. The derived files —
-`resources/logo.jpg`, `resources/icon.png`, and `resources/splash.png` — are
-colour-graded to the app's green ramp and sized for store listings and the
-Capacitor/Android wrapper. The in-app mark (`public/logo-mark.jpg`), favicon
-(`public/icon-512.png`), and touch icon (`public/apple-touch-icon.png`) all come
-from the same peso-emblem crop, so the sidebar, mobile header, Settings card, and
-browser tab stay in sync.
+`resources/logo-original.jpg` is the source artwork. It is inverted into the
+app's light palette — a near-white mint tile with the peso emblem in green — so
+the brand reads as part of the pastel UI instead of a heavy dark block. The
+in-app mark (`public/logo-mark-light.jpg`), favicon (`public/icon-512.png`), and
+touch icon (`public/apple-touch-icon.png`) all come from the same emblem crop,
+while `resources/icon.png`, `resources/splash.png`, and `resources/logo.jpg` are
+the store/Android versions of the same grade.
 
 ## Project structure
 

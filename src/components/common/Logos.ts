@@ -1,10 +1,10 @@
 /**
- * Pondo app mark from `public/logo-mark.jpg` — the peso emblem from the brand
- * logo, colour-graded to the app's green ramp. Decorative: the wordmark next to
- * it already names the app.
+ * Pondo app mark from `public/logo-mark-light.jpg` — the peso emblem from the
+ * brand logo, re-graded into a light pastel tile so it sits quietly next to the
+ * UI. Decorative: the wordmark next to it already names the app.
  */
 export const pondoMark = (size = 42, className?: string): string => `<img
-  src="${import.meta.env.BASE_URL}logo-mark.jpg"
+  src="${import.meta.env.BASE_URL}logo-mark-light.jpg"
   alt=""
   width="${size}"
   height="${size}"
