@@ -47,6 +47,8 @@ const captureFocus = (): SavedFocus | null => {
   const key = element.dataset.focus;
   if (!key) return null;
 
+  // || 
+
   if (element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement) {
     try {
       return { key, start: element.selectionStart, end: element.selectionEnd };
@@ -74,7 +76,7 @@ const restoreFocus = (saved: SavedFocus | null): void => {
     try {
       element.setSelectionRange(saved.start, saved.end);
     } catch {
-      // Number and date inputs do not support selection ranges.
+      // Number and date inputs do not support selection ranges so xadddd.
     }
   }
 };
