@@ -53,6 +53,9 @@
 
 * {
   box-sizing: border-box;
+  /* Android WebView paints a translucent blue overlay on tapped elements.
+     Pondo uses its own active states, so the default highlight is noise. */
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
@@ -98,6 +101,7 @@ select {
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 h1,
@@ -110,6 +114,11 @@ strong {
 ::selection {
   background: var(--green-200);
   color: var(--green-700);
+}
+
+/* Pointer/touch focus should stay quiet; keyboard focus keeps the green ring. */
+:focus {
+  outline: none;
 }
 
 :focus-visible {

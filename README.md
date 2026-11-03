@@ -46,11 +46,21 @@ sample month**.
 
 ### Scripts
 
-| Command           | What it does                              |
-| ----------------- | ----------------------------------------- |
-| `npm run dev`     | Start the Vite dev server with hot reload |
-| `npm run build`   | Type-check and build for production       |
-| `npm run preview` | Preview the production build locally      |
+| Command                 | What it does                                    |
+| ----------------------- | ----------------------------------------------- |
+| `npm run dev`           | Start the Vite dev server with hot reload       |
+| `npm run build`         | Type-check and build for production             |
+| `npm run preview`       | Preview the production build locally            |
+| `npm run version:patch` | Bump patch version (`0.2.0` → `0.2.1`)          |
+| `npm run version:minor` | Bump minor version (`0.2.0` → `0.3.0`)          |
+| `npm run version:major` | Bump major version (`0.2.0` → `1.0.0`)          |
+
+### Versioning
+
+`package.json` is the single source of truth for the app version. The web build
+injects it at build time and the Android build reads it for `versionName` and
+derives `versionCode` from it (`0.2.0` → `200`, `0.2.1` → `201`). Bump the
+version whenever a feature or fix lands, then rebuild both targets.
 
 ## Deploying to GitHub Pages
 

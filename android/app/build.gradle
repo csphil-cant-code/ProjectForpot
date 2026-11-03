@@ -1,4 +1,19 @@
+import groovy.json.JsonSlurper
+
 apply plugin: 'com.android.application'
+
+// Keep the APK version in sync with package.json, which is also what the web
+// build displays. `versionCode` is derived so it always increases with semver:
+// 0.2.0 -> 200, 0.2.1 -> 201, 1.0.0 -> 10000.
+def pondoPkg = new JsonSlurper().parse(rootProject.file("../package.json"))
+def pondoVersionParts = pondoPkg.version.tokenize(".").collect {
+    it.replaceAll(/[^0-9].*$/, "").toInteger()
+}
+while (pondoVersionParts.size() < 3) {
+    pondoVersionParts << 0
+}
+def pondoVersionCode =
+    pondoVersionParts[0] * 10000 + pondoVersionParts[1] * 100 + pondoVersionParts[2]
 
 android {
     namespace = "com.pondo.app"
@@ -7,8 +22,8 @@ android {
         applicationId "com.pondo.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode pondoVersionCode
+        versionName pondoPkg.version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

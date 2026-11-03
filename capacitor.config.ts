@@ -18,11 +18,11 @@ const config: CapacitorConfig = {
       hidden: false,
     },
     SplashScreen: {
-      launchShowDuration: 1200,
+      // Let the branded in-app loader be the first thing users see. A native
+      // splash duration of 0 skips Capacitor's logo overlay entirely.
+      launchShowDuration: 0,
       launchAutoHide: true,
       backgroundColor: '#e9f5ec',
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
       showSpinner: false,
       splashFullScreen: true,
       splashImmersive: false,

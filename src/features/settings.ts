@@ -122,6 +122,8 @@ export const settingsPage = (state: AppState): string => `
         This app was made by me, Plong, with the help of AI. I made it for Pot
         so she can monitor her budget.
       </p>
-      <p class="muted">Version 0.1.0 · built with HTML, CSS &amp; TypeScript</p>
+      <p class="muted">
+        Version ${__APP_VERSION__} · built with HTML, CSS &amp; TypeScript
+      </p>
     </div>
   </section>`;
