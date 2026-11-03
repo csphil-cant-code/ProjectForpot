@@ -20,6 +20,36 @@
     <title>Pondo · Budget ni Pot</title>
   </head>
   <body>
+    <div
+      id="app-loader"
+      class="app-loader"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading Pondo"
+    >
+      <div class="app-loader__inner">
+        <div class="app-loader__mark-wrap" aria-hidden="true">
+          <img
+            class="app-loader__mark"
+            src="/logo-mark-light.jpg"
+            alt=""
+            width="76"
+            height="76"
+            draggable="false"
+          />
+          <span class="app-loader__ring"></span>
+        </div>
+
+        <div class="app-loader__wordmark">
+          <span class="app-loader__name">Pondo</span>
+          <span class="app-loader__tagline">Budget ni Pot</span>
+        </div>
+
+        <div class="app-loader__bar" aria-hidden="true"><span></span></div>
+        <p class="app-loader__status">Loading your budget…</p>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

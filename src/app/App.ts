@@ -10,7 +10,10 @@ import { exportState } from "../lib/storage";
 import { QUICK_CATEGORIES } from "../lib/categoryIcons";
 import { currentMonth, shiftMonth } from "../utils/date";
 import { NAV_ITEMS, appShell } from "../components/layout";
-import { transactionModal } from "../components/transactions";
+import {
+  syncTransactionForm,
+  transactionModal,
+} from "../components/transactions";
 import { toast } from "../components/common/ui";
 import { dashboardPage } from "../features/dashboard";
 import { transactionsPage } from "../features/transactions";
@@ -239,27 +242,46 @@ const handleClick = (event: MouseEvent): void => {
       break;
     case "tx-kind": {
       const kind = parseKind(target.dataset.kind);
+      if (kind === ui.txForm.kind) break;
       const first = state.categories.find(
         (category) => category.kind === kind,
       );
-      uiStore.patchTxForm({ kind, categoryId: first?.id ?? "", error: "" });
+      uiStore.patchTxForm(
+        { kind, categoryId: first?.id ?? "", error: "" },
+        false,
+      );
+      syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
       break;
     }
     case "tx-account":
-      uiStore.patchTxForm({ account: parseAccount(target.dataset.account) });
+      uiStore.patchTxForm(
+        { account: parseAccount(target.dataset.account) },
+        false,
+      );
+      syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
       break;
     case "tx-category": {
       const id = target.dataset.id;
-      if (id) uiStore.patchTxForm({ categoryId: id, error: "" });
+      if (id) {
+        uiStore.patchTxForm({ categoryId: id, error: "" }, false);
+        syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
+      }
       break;
     }
     case "tx-amount": {
       const amount = target.dataset.amount;
-      if (amount) uiStore.patchTxForm({ amount, error: "" });
+      if (amount) {
+        uiStore.patchTxForm({ amount, error: "" }, false);
+        syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
+      }
       break;
     }
     case "tx-details":
-      uiStore.patchTxForm({ detailsOpen: !ui.txForm.detailsOpen });
+      uiStore.patchTxForm(
+        { detailsOpen: !ui.txForm.detailsOpen },
+        false,
+      );
+      syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
       break;
     case "tx-quick-create": {
       const name = target.dataset.name ?? "";
@@ -275,7 +297,8 @@ const handleClick = (event: MouseEvent): void => {
 
       if (existing) {
         if (existing.kind === kind) {
-          uiStore.patchTxForm({ categoryId: existing.id, error: "" });
+          uiStore.patchTxForm({ categoryId: existing.id, error: "" }, false);
+          syncTransactionForm(root, state, uiStore.getSnapshot().txForm);
         } else {
           uiStore.notify(
             `“${existing.name}” is already an income or expense category.`,
@@ -384,11 +407,24 @@ const handleSubmit = (event: SubmitEvent): void => {
     const value = Number(formState.amount);
 
     if (!Number.isFinite(value) || value <= 0) {
-      uiStore.patchTxForm({ error: "Enter an amount greater than zero." });
+      uiStore.patchTxForm(
+        { error: "Enter an amount greater than zero." },
+        false,
+      );
+      syncTransactionForm(
+        root,
+        budgetStore.getSnapshot(),
+        uiStore.getSnapshot().txForm,
+      );
       return;
     }
     if (!formState.categoryId) {
-      uiStore.patchTxForm({ error: "Pick a category first." });
+      uiStore.patchTxForm({ error: "Pick a category first." }, false);
+      syncTransactionForm(
+        root,
+        budgetStore.getSnapshot(),
+        uiStore.getSnapshot().txForm,
+      );
       return;
     }
 
@@ -436,9 +472,19 @@ const handleInput = (event: Event): void => {
       break;
     case "tx-amount":
       uiStore.patchTxForm({ amount: target.value, error: "" }, false);
+      syncTransactionForm(
+        root,
+        budgetStore.getSnapshot(),
+        uiStore.getSnapshot().txForm,
+      );
       break;
     case "tx-date":
       uiStore.patchTxForm({ date: target.value }, false);
+      syncTransactionForm(
+        root,
+        budgetStore.getSnapshot(),
+        uiStore.getSnapshot().txForm,
+      );
       break;
     case "tx-note":
       uiStore.patchTxForm({ note: target.value }, false);

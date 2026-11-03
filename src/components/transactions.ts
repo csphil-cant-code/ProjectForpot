@@ -1,4 +1,4 @@
-import type { AppState, Category, Transaction } from "../types";
+import type { AccountId, AppState, Category, Transaction, TxKind } from "../types";
 import type { UiState } from "../stores/uiStore";
 import { ACCOUNT_LABEL, KIND_LABEL } from "../lib/labels";
 import { QUICK_CATEGORIES } from "../lib/categoryIcons";
@@ -116,14 +116,250 @@ export const transactionList = (
     </div>`;
 };
 
+/**
+ * Reflects a category pick on the already-rendered tiles.
+ */
+const syncCategorySelection = (
+  scope: ParentNode,
+  categoryId: string,
+): void => {
+  scope
+    .querySelectorAll<HTMLElement>(".cat-grid [data-action='tx-category']")
+    .forEach((tile) => {
+      const active = tile.dataset.id === categoryId;
+      tile.classList.toggle("is-active", active);
+      tile.setAttribute("aria-pressed", String(active));
+
+      const check = tile.querySelector(".cat-tile__check");
+      if (active && !check) {
+        tile.insertAdjacentHTML(
+          "beforeend",
+          icon("check", 15, "cat-tile__check"),
+        );
+      } else if (!active && check) {
+        check.remove();
+      }
+    });
+};
+
+const syncAccountSelection = (
+  scope: ParentNode,
+  account: AccountId,
+): void => {
+  scope
+    .querySelectorAll<HTMLElement>(
+      ".account-picker [data-action='tx-account']",
+    )
+    .forEach((button) => {
+      const active = button.dataset.account === account;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+
+      const check = button.querySelector(".account-picker__check");
+      if (active && !check) {
+        button.insertAdjacentHTML(
+          "beforeend",
+          icon("check", 15, "account-picker__check"),
+        );
+      } else if (!active && check) {
+        check.remove();
+      }
+    });
+};
+
+/**
+ * Keeps the already-rendered transaction form in sync with the UI store.
+ * Form interactions must not rebuild the modal — a full re-render resets
+ * scroll position and focus, and flickers on mobile/APK.
+ */
+export const syncTransactionForm = (
+  scope: ParentNode,
+  state: AppState,
+  form: UiState["txForm"],
+): void => {
+  const kind = form.kind;
+
+  scope
+    .querySelectorAll<HTMLElement>(".tx-kind [data-action='tx-kind']")
+    .forEach((button) => {
+      const active = button.dataset.kind === kind;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+
+  const legend = scope.querySelector<HTMLElement>("[data-cat-legend]");
+  const legendLabel =
+    kind === "expense" ? "What was it for?" : "Where did it come from?";
+  if (legend && legend.textContent?.trim() !== legendLabel) {
+    legend.textContent = legendLabel;
+  }
+
+  scope.querySelectorAll<HTMLElement>("[data-cat-panel]").forEach((panel) => {
+    panel.hidden = panel.dataset.catPanel !== kind;
+  });
+
+  syncCategorySelection(scope, form.categoryId);
+  syncAccountSelection(scope, form.account);
+
+  const amountInput = scope.querySelector<HTMLInputElement>(
+    "[data-field='tx-amount']",
+  );
+  if (amountInput && amountInput.value !== form.amount) {
+    amountInput.value = form.amount;
+  }
+
+  const detailsToggle = scope.querySelector<HTMLButtonElement>(
+    "[data-action='tx-details']",
+  );
+  if (detailsToggle) {
+    detailsToggle.classList.toggle("is-open", form.detailsOpen);
+    detailsToggle.setAttribute("aria-expanded", String(form.detailsOpen));
+  }
+
+  const detailsPanel = scope.querySelector<HTMLElement>(
+    "[data-tx-details-panel]",
+  );
+  if (detailsPanel) detailsPanel.hidden = !form.detailsOpen;
+
+  const detailsMeta = scope.querySelector<HTMLElement>(
+    "[data-tx-details-meta]",
+  );
+  if (detailsMeta) {
+    const metaLabel = relativeDay(form.date);
+    if (detailsMeta.textContent !== metaLabel) {
+      detailsMeta.textContent = metaLabel;
+    }
+  }
+
+  const submit = scope.querySelector<HTMLButtonElement>("[data-tx-submit]");
+  if (submit) {
+    submit.disabled = !state.categories.some(
+      (category) => category.kind === kind,
+    );
+    if (submit.dataset.saveKind !== kind) {
+      submit.dataset.saveKind = kind;
+      submit.innerHTML = `${icon("check", 17)} Save ${kind}`;
+    }
+  }
+
+  if (!form.error) {
+    scope.querySelector("#tx-form .form-error")?.remove();
+  } else {
+    const formElement = scope.querySelector<HTMLFormElement>("#tx-form");
+    let errorElement = formElement?.querySelector<HTMLElement>(".form-error");
+    if (formElement && !errorElement) {
+      formElement
+        .querySelector(".form-actions")
+        ?.insertAdjacentHTML(
+          "beforebegin",
+          `<p class="form-error" role="alert">${icon("alert", 15)}<span data-error-text></span></p>`,
+        );
+      errorElement = formElement.querySelector<HTMLElement>(".form-error");
+    }
+    const errorText =
+      errorElement?.querySelector<HTMLElement>("[data-error-text]") ??
+      errorElement;
+    if (errorText && errorText.textContent !== form.error) {
+      errorText.textContent = form.error;
+    }
+  }
+};
+
 const QUICK_AMOUNTS = [50, 100, 250, 500, 1000];
+
+const categoryPanel = (
+  kind: TxKind,
+  categories: Category[],
+  activeId: string,
+  hidden: boolean,
+): string => {
+  const suggestions = QUICK_CATEGORIES.filter((preset) => preset.kind === kind);
+
+  return `
+    <div data-cat-panel="${kind}"${hidden ? " hidden" : ""}>
+      ${
+        categories.length > 0
+          ? `<div class="cat-grid">
+              ${categories
+                .map((category) => {
+                  const active = activeId === category.id;
+                  return `<button
+                    type="button"
+                    class="cat-tile${active ? " is-active" : ""}"
+                    data-action="tx-category"
+                    data-id="${escapeHtml(category.id)}"
+                    aria-pressed="${active}"
+                  >
+                    <span
+                      class="cat-tile__emoji"
+                      style="background:${category.color}"
+                      aria-hidden="true"
+                    >${category.emoji}</span>
+                    <span class="cat-tile__name">${escapeHtml(category.name)}</span>
+                    ${active ? icon("check", 15, "cat-tile__check") : ""}
+                  </button>`;
+                })
+                .join("")}
+            </div>`
+          : `<div class="tx-empty">
+              <div class="tx-empty__head">
+                <span class="tx-empty__emoji" aria-hidden="true">🌱</span>
+                <div>
+                  <strong>No ${KIND_LABEL[kind].toLowerCase()} categories yet</strong>
+                  <p>Pick a suggestion to create one instantly.</p>
+                </div>
+              </div>
+
+              <div class="tx-empty__presets">
+                ${suggestions
+                  .map(
+                    (preset) => `<button
+                      type="button"
+                      class="quick-cat quick-cat--sm"
+                      data-action="tx-quick-create"
+                      data-name="${escapeHtml(preset.name)}"
+                      data-kind="${preset.kind}"
+                    >
+                      <span aria-hidden="true">${preset.emoji}</span>
+                      ${escapeHtml(preset.name)} ${icon("plus", 13)}
+                    </button>`,
+                  )
+                  .join("")}
+              </div>
+
+              <button type="button" class="linkish" data-action="tx-goto-budgets">
+                Or create your own category
+              </button>
+            </div>`
+      }
+    </div>`;
+};
+
+const categoryFieldset = (state: AppState, ui: UiState): string => {
+  const form = ui.txForm;
+
+  return `
+    <fieldset class="field" data-cat-fieldset>
+      <legend class="field__label" data-cat-legend>
+        ${form.kind === "expense" ? "What was it for?" : "Where did it come from?"}
+      </legend>
+
+      ${(["expense", "income"] as const)
+        .map((kind) =>
+          categoryPanel(
+            kind,
+            state.categories.filter((category) => category.kind === kind),
+            form.categoryId,
+            kind !== form.kind,
+          ),
+        )
+        .join("")}
+    </fieldset>`;
+};
 
 const transactionForm = (state: AppState, ui: UiState): string => {
   const form = ui.txForm;
   const categories = state.categories.filter(
-    (category) => category.kind === form.kind,
-  );
-  const suggestions = QUICK_CATEGORIES.filter(
     (category) => category.kind === form.kind,
   );
 
@@ -177,67 +413,7 @@ const transactionForm = (state: AppState, ui: UiState): string => {
         </div>
       </div>
 
-      <fieldset class="field">
-        <legend class="field__label">
-          ${form.kind === "expense" ? "What was it for?" : "Where did it come from?"}
-        </legend>
-
-        ${
-          categories.length > 0
-            ? `<div class="cat-grid">
-                ${categories
-                  .map((category) => {
-                    const active = form.categoryId === category.id;
-                    return `<button
-                      type="button"
-                      class="cat-tile${active ? " is-active" : ""}"
-                      data-action="tx-category"
-                      data-id="${escapeHtml(category.id)}"
-                      aria-pressed="${active}"
-                    >
-                      <span
-                        class="cat-tile__emoji"
-                        style="background:${category.color}"
-                        aria-hidden="true"
-                      >${category.emoji}</span>
-                      <span class="cat-tile__name">${escapeHtml(category.name)}</span>
-                      ${active ? icon("check", 15, "cat-tile__check") : ""}
-                    </button>`;
-                  })
-                  .join("")}
-              </div>`
-            : `<div class="tx-empty">
-                <div class="tx-empty__head">
-                  <span class="tx-empty__emoji" aria-hidden="true">🌱</span>
-                  <div>
-                    <strong>No ${KIND_LABEL[form.kind].toLowerCase()} categories yet</strong>
-                    <p>Pick a suggestion to create one instantly.</p>
-                  </div>
-                </div>
-
-                <div class="tx-empty__presets">
-                  ${suggestions
-                    .map(
-                      (preset) => `<button
-                        type="button"
-                        class="quick-cat quick-cat--sm"
-                        data-action="tx-quick-create"
-                        data-name="${escapeHtml(preset.name)}"
-                        data-kind="${preset.kind}"
-                      >
-                        <span aria-hidden="true">${preset.emoji}</span>
-                        ${escapeHtml(preset.name)} ${icon("plus", 13)}
-                      </button>`,
-                    )
-                    .join("")}
-                </div>
-
-                <button type="button" class="linkish" data-action="tx-goto-budgets">
-                  Or create your own category
-                </button>
-              </div>`
-        }
-      </fieldset>
+      ${categoryFieldset(state, ui)}
 
       <fieldset class="field">
         <legend class="field__label">Paid with</legend>
@@ -277,42 +453,44 @@ const transactionForm = (state: AppState, ui: UiState): string => {
           ${icon("chevron-right", 15, "tx-details__chevron")}
           Date &amp; note <span class="muted">(optional)</span>
         </span>
-        <span class="tx-details__meta">${relativeDay(form.date)}</span>
+        <span class="tx-details__meta" data-tx-details-meta>${relativeDay(form.date)}</span>
       </button>
 
-      ${
-        form.detailsOpen
-          ? `<div class="form-row" id="tx-details-panel">
-              <label class="field">
-                <span class="field__label">Date</span>
-                <input
-                  class="input"
-                  type="date"
-                  value="${escapeHtml(form.date)}"
-                  max="${todayISO()}"
-                  data-field="tx-date"
-                  data-focus="tx-date"
-                />
-              </label>
-              <label class="field">
-                <span class="field__label">Note</span>
-                <input
-                  class="input"
-                  type="text"
-                  placeholder="e.g. Lunch with friends"
-                  value="${escapeHtml(form.note)}"
-                  maxlength="80"
-                  data-field="tx-note"
-                  data-focus="tx-note"
-                />
-              </label>
-            </div>`
-          : ""
-      }
+      <div
+        id="tx-details-panel"
+        data-tx-details-panel
+        ${form.detailsOpen ? "" : "hidden"}
+      >
+        <div class="form-row">
+          <label class="field">
+            <span class="field__label">Date</span>
+            <input
+              class="input"
+              type="date"
+              value="${escapeHtml(form.date)}"
+              max="${todayISO()}"
+              data-field="tx-date"
+              data-focus="tx-date"
+            />
+          </label>
+          <label class="field">
+            <span class="field__label">Note</span>
+            <input
+              class="input"
+              type="text"
+              placeholder="e.g. Lunch with friends"
+              value="${escapeHtml(form.note)}"
+              maxlength="80"
+              data-field="tx-note"
+              data-focus="tx-note"
+            />
+          </label>
+        </div>
+      </div>
 
       ${
         form.error
-          ? `<p class="form-error" role="alert">${icon("alert", 15)}${escapeHtml(form.error)}</p>`
+          ? `<p class="form-error" role="alert">${icon("alert", 15)}<span data-error-text>${escapeHtml(form.error)}</span></p>`
           : ""
       }
 
@@ -321,6 +499,8 @@ const transactionForm = (state: AppState, ui: UiState): string => {
         <button
           type="submit"
           class="btn btn--primary"
+          data-tx-submit
+          data-save-kind="${form.kind}"
           ${categories.length === 0 ? "disabled" : ""}
         >${icon("check", 17)} Save ${form.kind}</button>
       </div>
