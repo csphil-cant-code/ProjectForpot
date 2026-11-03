@@ -43,6 +43,11 @@
     "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial,
     sans-serif;
 
+  /* Safe areas injected by Capacitor's SystemBars plugin on Android.
+     `env()` keeps the web build working where the variables are absent. */
+  --safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+
   color-scheme: light;
 }
 
@@ -141,7 +146,7 @@ input[type="number"] {
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 34px 38px 90px;
+  padding: calc(34px + var(--safe-top)) 38px 90px;
 }
 
 .sidebar {
@@ -153,7 +158,7 @@ input[type="number"] {
   width: 256px;
   flex-shrink: 0;
   height: 100vh;
-  padding: 28px 20px 22px;
+  padding: calc(28px + var(--safe-top)) 20px 22px;
   border-right: 1px solid var(--line);
   background: rgba(253, 255, 253, 0.72);
   backdrop-filter: blur(14px);
@@ -2692,7 +2697,7 @@ input[type="number"] {
   }
 
   .page {
-    padding: 30px 26px 90px;
+    padding: calc(30px + var(--safe-top)) 26px 90px;
   }
 }
 
@@ -2706,7 +2711,7 @@ input[type="number"] {
   }
 
   .page {
-    padding: 24px 20px 104px;
+    padding: calc(24px + var(--safe-top)) 20px 104px;
   }
 
   .mobile-brand {
@@ -2724,7 +2729,7 @@ input[type="number"] {
     z-index: 80;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+    padding: 8px 8px calc(8px + var(--safe-bottom));
     border-top: 1px solid var(--line);
     background: rgba(252, 255, 252, 0.94);
     backdrop-filter: blur(14px);
@@ -2752,7 +2757,7 @@ input[type="number"] {
 
   .fab {
     right: 18px;
-    bottom: calc(78px + env(safe-area-inset-bottom));
+    bottom: calc(78px + var(--safe-bottom));
   }
 
   .modal {
@@ -2766,7 +2771,7 @@ input[type="number"] {
   }
 
   .toast {
-    bottom: calc(84px + env(safe-area-inset-bottom));
+    bottom: calc(84px + var(--safe-bottom));
   }
 }
 
@@ -2800,7 +2805,7 @@ input[type="number"] {
 
 @media (max-width: 620px) {
   .page {
-    padding: 20px 14px 100px;
+    padding: calc(20px + var(--safe-top)) 14px 100px;
   }
 
   .page-head {
